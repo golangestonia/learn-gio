@@ -26,8 +26,7 @@ var location = f32.Pt(300, 300)
 var drag gesture.Drag
 
 func render(ops *op.Ops, queue event.Queue, size image.Point, metric unit.Metric) {
-	op.Offset(location).Add(ops)
-
+	// handle drag events
 	var dragOffset f32.Point
 	for _, ev := range drag.Events(metric, queue, gesture.Both) {
 		if ev.Type == pointer.Drag {
@@ -36,10 +35,14 @@ func render(ops *op.Ops, queue event.Queue, size image.Point, metric unit.Metric
 	}
 	location = location.Add(dragOffset)
 
+	// update the offset, must be after drag.Events
+	op.Offset(location).Add(ops)
+
 	// register image area for input events
 	pointer.Rect(image.Rectangle{Max: imageOp.Size()}).Add(ops)
 	drag.Add(ops)
 
+	// draw the image
 	imageOp.Add(ops)
 	paint.PaintOp{}.Add(ops)
 }
