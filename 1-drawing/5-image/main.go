@@ -3,8 +3,10 @@
 package main
 
 import (
+	"bytes"
+	_ "embed"
 	"image"
-	"image/color"
+	"image/png"
 	"log"
 	"os"
 
@@ -16,26 +18,21 @@ import (
 	"gioui.org/op/paint"  // paint contains operations for coloring.
 )
 
+//go:embed gamer.png
+var imageData []byte
+
+var imageOp = func() paint.ImageOp {
+	m, err := png.Decode(bytes.NewReader(imageData))
+	if err != nil {
+		panic(err)
+	}
+	return paint.NewImageOp(m)
+}()
+
 func render(ops *op.Ops, size image.Point) {
-	func() {
-		save := op.Save(ops)
-
-		clip.Rect{Max: image.Pt(100, 100)}.Add(ops)
-		red := color.NRGBA{R: 0x80, A: 0xFF}
-		paint.ColorOp{Color: red}.Add(ops)
-		paint.PaintOp{}.Add(ops)
-
-		save.Load()
-	}()
-
-	func() {
-		defer op.Save(ops).Load()
-
-		clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Add(ops)
-		green := color.NRGBA{G: 0xFF, A: 0xFF}
-		paint.ColorOp{Color: green}.Add(ops)
-		paint.PaintOp{}.Add(ops)
-	}()
+	clip.Rect{Max: image.Pt(200, 200)}.Add(ops)
+	imageOp.Add(ops)
+	paint.PaintOp{}.Add(ops)
 }
 
 /* usual setup code */

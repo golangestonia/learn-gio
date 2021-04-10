@@ -3,12 +3,15 @@
 package main
 
 import (
+	"bytes"
+	_ "embed"
 	"image"
-	"image/color"
+	"image/png"
 	"log"
 	"os"
 
-	"gioui.org/app"       // app contains Window handling.
+	"gioui.org/app" // app contains Window handling.
+	"gioui.org/f32"
 	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"    // layout is used for layouting widgets.
 	"gioui.org/op"        // op is used for recording different operations.
@@ -16,26 +19,27 @@ import (
 	"gioui.org/op/paint"  // paint contains operations for coloring.
 )
 
+//go:embed gamer.png
+var imageData []byte
+
+var imageOp = func() paint.ImageOp {
+	m, err := png.Decode(bytes.NewReader(imageData))
+	if err != nil {
+		panic(err)
+	}
+	return paint.NewImageOp(m)
+}()
+
+var position float32
+
 func render(ops *op.Ops, size image.Point) {
-	func() {
-		save := op.Save(ops)
+	position += 0.5
+	op.Offset(f32.Pt(position, 0)).Add(ops)
+	op.InvalidateOp{}.Add(ops)
 
-		clip.Rect{Max: image.Pt(100, 100)}.Add(ops)
-		red := color.NRGBA{R: 0x80, A: 0xFF}
-		paint.ColorOp{Color: red}.Add(ops)
-		paint.PaintOp{}.Add(ops)
-
-		save.Load()
-	}()
-
-	func() {
-		defer op.Save(ops).Load()
-
-		clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Add(ops)
-		green := color.NRGBA{G: 0xFF, A: 0xFF}
-		paint.ColorOp{Color: green}.Add(ops)
-		paint.PaintOp{}.Add(ops)
-	}()
+	clip.Rect{Max: image.Pt(200, 200)}.Add(ops)
+	imageOp.Add(ops)
+	paint.PaintOp{}.Add(ops)
 }
 
 /* usual setup code */
