@@ -12,14 +12,52 @@ import (
 
 	"gioui.org/app"       // app contains Window handling.
 	"gioui.org/f32"       // f32 contains float32 points.
+	"gioui.org/io/event"  // event contains general event information.
+	"gioui.org/io/key"    // key contains input/output for keyboards.
 	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"    // layout is used for layouting widgets.
 	"gioui.org/op"        // op is used for recording different operations.
-	"gioui.org/op/clip"   // clip contains operations for clipping painting area.
 	"gioui.org/op/paint"  // paint contains operations for coloring.
 )
 
-//go:embed gamer.png
+var location = f32.Pt(300, 300)
+
+const speed = 50
+
+func render(ops *op.Ops, queue event.Queue, size image.Point) {
+	// keep the focus, since only one thing can
+	key.FocusOp{Tag: &location}.Add(ops)
+	// register tag &location as reading input
+	key.InputOp{Tag: &location}.Add(ops)
+
+	// read events from input event queue
+	for _, ev := range queue.Events(&location) {
+		// figure out, which event it was
+		switch ev := ev.(type) {
+		case key.Event:
+			if ev.State == key.Press {
+				switch ev.Name {
+				case key.NameLeftArrow:
+					location.X -= speed
+				case key.NameUpArrow:
+					location.Y -= speed
+				case key.NameRightArrow:
+					location.X += speed
+				case key.NameDownArrow:
+					location.Y += speed
+				}
+			}
+		}
+	}
+
+	op.Offset(location).Add(ops)
+	imageOp.Add(ops)
+	paint.PaintOp{}.Add(ops)
+}
+
+/* usual setup code */
+
+//go:embed neutral.png
 var imageData []byte
 
 var imageOp = func() paint.ImageOp {
@@ -29,20 +67,6 @@ var imageOp = func() paint.ImageOp {
 	}
 	return paint.NewImageOp(m)
 }()
-
-var position float32
-
-func render(ops *op.Ops, size image.Point) {
-	position += 0.5
-	op.Offset(f32.Pt(position, 0)).Add(ops)
-	op.InvalidateOp{}.Add(ops)
-
-	clip.Rect{Max: image.Pt(200, 200)}.Add(ops)
-	imageOp.Add(ops)
-	paint.PaintOp{}.Add(ops)
-}
-
-/* usual setup code */
 
 func main() {
 	go func() {
@@ -69,7 +93,7 @@ func loop(w *app.Window) error {
 			// gtx is used to pass around rendering and event information.
 			gtx := layout.NewContext(&ops, e)
 			// render content
-			render(gtx.Ops, gtx.Constraints.Max)
+			render(gtx.Ops, gtx.Queue, gtx.Constraints.Max)
 			// render and handle the operations from the UI.
 			e.Frame(gtx.Ops)
 
