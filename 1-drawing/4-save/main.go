@@ -9,7 +9,6 @@ import (
 	"os"
 
 	"gioui.org/app"       // app contains Window handling.
-	"gioui.org/f32"       // f32 contains float32 points.
 	"gioui.org/io/system" // system is used for system events (e.g. closing the window).
 	"gioui.org/layout"    // layout is used for layouting widgets.
 	"gioui.org/op"        // op is used for recording different operations.
@@ -17,51 +16,24 @@ import (
 	"gioui.org/op/paint"  // paint contains operations for coloring.
 )
 
-var render = renderOutline
+func render(ops *op.Ops, size image.Point) {
+	func() {
+		defer op.Save(ops).Load()
 
-func renderOutline(ops *op.Ops, size image.Point) {
-	// create a custom clip shape
-	var p clip.Path
-	p.Begin(ops)
-	p.MoveTo(f32.Pt(30, 30))
-	p.LineTo(f32.Pt(170, 170))
-	p.LineTo(f32.Pt(80, 170))
-	// the path must be closed
-	p.Close()
+		clip.Rect{Max: image.Pt(100, 100)}.Add(ops)
+		red := color.NRGBA{R: 0x80, A: 0xFF}
+		paint.ColorOp{Color: red}.Add(ops)
+		paint.PaintOp{}.Add(ops)
+	}()
 
-	// set the clip to the outline
-	clip.Outline{
-		Path: p.End(),
-	}.Op().Add(ops)
+	func() {
+		defer op.Save(ops).Load()
 
-	// color the clip area:
-	red := color.NRGBA{R: 0xFF, A: 0xFF}
-	paint.ColorOp{Color: red}.Add(ops)
-	paint.PaintOp{}.Add(ops)
-}
-
-func renderStroke(ops *op.Ops, size image.Point) {
-	var p clip.Path
-	p.Begin(ops)
-	p.MoveTo(f32.Pt(30, 30))
-	p.LineTo(f32.Pt(170, 170))
-	p.LineTo(f32.Pt(80, 170))
-	// p.Close()
-
-	// set the clip to the stroke of the path
-	clip.Stroke{
-		Path: p.End(),
-		Style: clip.StrokeStyle{
-			Width: 20,
-			Cap:   clip.RoundCap,  // clip.FlatCap, clip.SquareCap
-			Join:  clip.RoundJoin, // clip.BevelJoin
-		},
-	}.Op().Add(ops)
-
-	// color the clip area:
-	red := color.NRGBA{R: 0xFF, A: 0xFF}
-	paint.ColorOp{Color: red}.Add(ops)
-	paint.PaintOp{}.Add(ops)
+		clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Add(ops)
+		green := color.NRGBA{G: 0xFF, A: 0xFF}
+		paint.ColorOp{Color: green}.Add(ops)
+		paint.PaintOp{}.Add(ops)
+	}()
 }
 
 /* usual setup code */
