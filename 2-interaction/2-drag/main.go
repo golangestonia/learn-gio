@@ -19,7 +19,7 @@ import (
 	"gioui.org/layout"     // layout is used for layouting widgets.
 	"gioui.org/op"         // op is used for recording different operations.
 	"gioui.org/op/paint"   // paint contains operations for coloring.
-	"gioui.org/unit"
+	"gioui.org/unit"       // unit contains metric conversion
 )
 
 var location = f32.Pt(300, 300)
