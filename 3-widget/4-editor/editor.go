@@ -16,6 +16,7 @@ var Theme = material.NewTheme(gofont.Collection())
 var editor widget.Editor
 
 func main() {
+	editor.SetText("hello world")
 	qapp.Layout(func(gtx layout.Context) layout.Dimensions {
 		return material.Editor(Theme, &editor, "").Layout(gtx)
 	})
