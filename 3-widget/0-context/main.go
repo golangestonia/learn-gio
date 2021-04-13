@@ -7,16 +7,14 @@ import (
 	"image/color"
 	"log"
 
-	// app contains Window handling.
 	"gioui.org/gesture"    // gesture contains different gesture event handling.
 	"gioui.org/io/pointer" // pointer contains input/output for mouse and touch screens.
+	"gioui.org/layout"     // layout is used for layouting widgets.
+	"gioui.org/op"         // op is used for recording different operations.
+	"gioui.org/op/clip"    // clip contains operations for clipping painting area.
+	"gioui.org/op/paint"   // paint contains operations for coloring.
 
-	// system is used for system events (e.g. closing the window).
-	"gioui.org/layout"   // layout is used for layouting widgets.
-	"gioui.org/op"       // op is used for recording different operations.
-	"gioui.org/op/clip"  // clip contains operations for clipping painting area.
-	"gioui.org/op/paint" // paint contains operations for coloring.
-	"github.com/golangestonia/learn-gio/qapp"
+	"github.com/golangestonia/learn-gio/qapp" // qapp contains convenience funcs for this tutorial
 )
 
 /*
