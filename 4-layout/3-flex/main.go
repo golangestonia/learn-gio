@@ -9,7 +9,6 @@ import (
 	"gioui.org/font/gofont"     // gofont is used for loading the default font.
 	"gioui.org/layout"          // layout is used for layouting widgets.
 	"gioui.org/text"            // text contains constants for text layouting.
-	"gioui.org/unit"            // unit contains metric conversion
 	"gioui.org/widget"          // widget contains state for different widgets
 	"gioui.org/widget/material" // material contains material design widgets.
 
@@ -20,10 +19,10 @@ var Theme = material.NewTheme(gofont.Collection())
 
 var editor widget.Editor
 
-var inset = layout.UniformInset(unit.Dp(8))
+var inset = layout.UniformInset(8)
 var border = widget.Border{
 	Color: color.NRGBA{R: 0x88, G: 0x88, B: 0x88, A: 0xFF},
-	Width: unit.Px(1),
+	Width: 1,
 }
 
 func main() {
