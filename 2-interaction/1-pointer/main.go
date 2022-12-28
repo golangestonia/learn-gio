@@ -8,9 +8,9 @@ import (
 	"gioui.org/f32"        // f32 contains float32 points.
 	"gioui.org/io/event"   // event contains general event information.
 	"gioui.org/io/pointer" // pointer contains input/output for mouse and touch screens.
-	"gioui.org/layout"     // layout is used for layouting widgets.
 	"gioui.org/op"         // op is used for recording different operations.
-	"gioui.org/op/paint"   // paint contains operations for coloring.
+	"gioui.org/op/clip"
+	"gioui.org/op/paint" // paint contains operations for coloring.
 
 	"github.com/golangestonia/learn-gio/qapp"   // qapp contains convenience funcs for this tutorial
 	"github.com/golangestonia/learn-gio/qasset" // qasset contains convenience assets for this tutorial
@@ -24,7 +24,7 @@ var targetLocation = location
 func main() {
 	qapp.InputSize(func(ops *op.Ops, queue event.Queue, windowSize image.Point) {
 		// register area for input events
-		pointer.Rect(image.Rectangle{Max: windowSize}).Add(ops)
+		defer clip.Rect(image.Rectangle{Max: windowSize}).Push(ops).Pop()
 
 		// register the area for pointer events
 		pointer.InputOp{
@@ -53,10 +53,10 @@ func main() {
 			op.InvalidateOp{}.Add(ops)
 		}
 
-		op.Offset(location).Add(ops)
+		defer op.Affine(f32.Affine2D{}.Offset(location)).Push(ops).Pop()
 
 		imageSize := imageOp.Size().Div(-2)
-		op.Offset(layout.FPt(imageSize)).Add(ops)
+		defer op.Offset(imageSize).Push(ops).Pop()
 
 		imageOp.Add(ops)
 		paint.PaintOp{}.Add(ops)

@@ -3,15 +3,14 @@
 package main
 
 import (
-	"image"
-
 	"gioui.org/f32"        // f32 contains float32 points.
 	"gioui.org/gesture"    // gesture contains different gesture events
 	"gioui.org/io/event"   // event contains general event information.
 	"gioui.org/io/pointer" // pointer contains input/output for mouse and touch screens.
 	"gioui.org/op"         // op is used for recording different operations.
-	"gioui.org/op/paint"   // paint contains operations for coloring.
-	"gioui.org/unit"       // unit contains metric conversion
+	"gioui.org/op/clip"
+	"gioui.org/op/paint" // paint contains operations for coloring.
+	"gioui.org/unit"     // unit contains metric conversion
 
 	"github.com/golangestonia/learn-gio/qapp"   // qapp contains convenience funcs for this tutorial
 	"github.com/golangestonia/learn-gio/qasset" // qasset contains convenience assets for this tutorial
@@ -34,10 +33,10 @@ func main() {
 		location = location.Add(dragOffset)
 
 		// update the offset, must be after drag.Events
-		op.Offset(location).Add(ops)
+		defer op.Affine(f32.Affine2D{}.Offset(location)).Push(ops).Pop()
 
 		// register image area for input events
-		pointer.Rect(image.Rectangle{Max: imageOp.Size()}).Add(ops)
+		defer clip.Rect{Max: imageOp.Size()}.Push(ops).Pop()
 		drag.Add(ops)
 
 		// draw the image

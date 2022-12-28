@@ -3,6 +3,8 @@
 package main
 
 import (
+	"strings"
+
 	"gioui.org/f32"      // f32 contains float32 points.
 	"gioui.org/io/event" // event contains general event information.
 	"gioui.org/io/key"   // key contains input/output for keyboards.
@@ -18,13 +20,17 @@ var imageOp = paint.NewImageOp(qasset.Neutral)
 const speed = 50
 
 var location = f32.Pt(300, 300)
+var arrowKeys = key.Set(strings.Join([]string{key.NameLeftArrow, key.NameUpArrow, key.NameRightArrow, key.NameDownArrow}, "|"))
 
 func main() {
 	qapp.Input(func(ops *op.Ops, queue event.Queue) {
 		// keep the focus, since only one thing can
 		key.FocusOp{Tag: &location}.Add(ops)
 		// register tag &location as reading input
-		key.InputOp{Tag: &location}.Add(ops)
+		key.InputOp{
+			Tag:  &location,
+			Keys: arrowKeys,
+		}.Add(ops)
 
 		// read events from input event queue
 		for _, ev := range queue.Events(&location) {
@@ -45,8 +51,7 @@ func main() {
 				}
 			}
 		}
-
-		op.Offset(location).Add(ops)
+		op.Affine(f32.Affine2D{}.Offset(location)).Add(ops)
 		imageOp.Add(ops)
 		paint.PaintOp{}.Add(ops)
 	})

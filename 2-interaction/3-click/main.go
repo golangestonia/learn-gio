@@ -7,12 +7,11 @@ import (
 	"image/color"
 	"log"
 
-	"gioui.org/gesture"    // gesture contains different gesture event handling.
-	"gioui.org/io/event"   // event contains general event information.
-	"gioui.org/io/pointer" // pointer contains input/output for mouse and touch screens.
-	"gioui.org/op"         // op is used for recording different operations.
-	"gioui.org/op/clip"    // clip contains operations for clipping painting area.
-	"gioui.org/op/paint"   // paint contains operations for coloring.
+	"gioui.org/gesture"  // gesture contains different gesture event handling.
+	"gioui.org/io/event" // event contains general event information.
+	"gioui.org/op"       // op is used for recording different operations.
+	"gioui.org/op/clip"  // clip contains operations for clipping painting area.
+	"gioui.org/op/paint" // paint contains operations for coloring.
 
 	"github.com/golangestonia/learn-gio/qapp" // qapp contains convenience funcs for this tutorial
 )
@@ -24,7 +23,7 @@ var buttonColor = color.NRGBA{R: 0x40, G: 0x40, B: 0x40, A: 0xFF}
 func main() {
 	qapp.Input(func(ops *op.Ops, queue event.Queue) {
 		// set the area where we want to listen to clicks
-		pointer.Rect(buttonArea).Add(ops)
+		defer clip.Rect(buttonArea).Push(ops).Pop()
 		// register click gesture
 		buttonClick.Add(ops)
 
@@ -53,7 +52,7 @@ func main() {
 		}
 
 		// draw the button
-		clip.Rect(buttonArea).Add(ops)
+		clip.Rect(buttonArea).Push(ops).Pop()
 		paint.ColorOp{Color: buttonColor}.Add(ops)
 		paint.PaintOp{}.Add(ops)
 	})
