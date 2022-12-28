@@ -23,14 +23,11 @@ func main() {
 		// p.Close()
 
 		// set the clip to the stroke of the path
-		clip.Stroke{
-			Path: p.End(),
-			Style: clip.StrokeStyle{
-				Width: 20,
-				Cap:   clip.RoundCap,  // clip.FlatCap, clip.SquareCap
-				Join:  clip.RoundJoin, // clip.BevelJoin
-			},
-		}.Op().Add(ops)
+		defer clip.Stroke{
+			Path:  p.End(),
+			Width: 20,
+			// package gioui.org/x/stroke provides additional styling options for a line.
+		}.Op().Push(ops).Pop()
 
 		// color the clip area:
 		red := color.NRGBA{R: 0xFF, A: 0xFF}

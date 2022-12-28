@@ -25,9 +25,9 @@ func main() {
 		p.Close()
 
 		// set the clip to the outline
-		clip.Outline{
+		defer clip.Outline{
 			Path: p.End(),
-		}.Op().Add(ops)
+		}.Op().Push(ops).Pop()
 
 		// color the clip area:
 		red := color.NRGBA{R: 0xFF, A: 0xFF}

@@ -16,8 +16,9 @@ import (
 func main() {
 	qapp.Render(func(ops *op.Ops) {
 		// It's possible to restrict the area where to draw.
-		clip.Rect{Max: image.Pt(100, 100)}.Add(ops)
-		// clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Add(ops)
+		clipping := clip.Rect{Max: image.Pt(100, 100)}.Push(ops)
+		defer clipping.Pop()
+		// defer clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Push(ops).Pop()
 
 		// color the clip area:
 		red := color.NRGBA{R: 0xFF, A: 0xFF}

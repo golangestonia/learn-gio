@@ -16,20 +16,18 @@ import (
 func main() {
 	qapp.Render(func(ops *op.Ops) {
 		func() {
-			save := op.Save(ops)
+			area := clip.Rect{Max: image.Pt(100, 100)}.Push(ops)
 
-			clip.Rect{Max: image.Pt(100, 100)}.Add(ops)
 			red := color.NRGBA{R: 0x80, A: 0xFF}
 			paint.ColorOp{Color: red}.Add(ops)
 			paint.PaintOp{}.Add(ops)
 
-			save.Load()
+			area.Pop()
 		}()
 
 		func() {
-			defer op.Save(ops).Load()
+			defer clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Push(ops).Pop()
 
-			clip.Rect{Min: image.Pt(40, 50), Max: image.Pt(60, 200)}.Add(ops)
 			green := color.NRGBA{G: 0xFF, A: 0xFF}
 			paint.ColorOp{Color: green}.Add(ops)
 			paint.PaintOp{}.Add(ops)
