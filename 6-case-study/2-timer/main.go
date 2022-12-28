@@ -106,8 +106,6 @@ func (ui *UI) Run(w *app.Window) error {
 			}
 		}
 	}
-
-	return nil
 }
 
 // Layout displays the main program layout.
@@ -140,11 +138,11 @@ func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 			layout.Rigid(material.ProgressBar(th, progress).Layout),
 			layout.Rigid(material.Body1(th, info.ProgressString()).Layout),
 
-			layout.Rigid(layout.Spacer{Height: th.TextSize}.Layout),
+			layout.Rigid(layout.Spacer{Height: gtx.Metric.SpToDp(th.TextSize)}.Layout),
 			layout.Rigid(material.Body1(th, "Duration").Layout),
 			layout.Rigid(material.Slider(th, &ui.duration, 0, 15).Layout),
 
-			layout.Rigid(layout.Spacer{Height: th.TextSize}.Layout),
+			layout.Rigid(layout.Spacer{Height: gtx.Metric.SpToDp(th.TextSize)}.Layout),
 			layout.Rigid(material.Button(th, &ui.reset, "Reset").Layout),
 		)
 	})

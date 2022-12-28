@@ -28,8 +28,8 @@ func main() {
 	// such that it can be used for testing.
 	ui := NewUI()
 
-	windowWidth := cellSize.Scale(float32(boardSize.X + 2))
-	windowHeight := cellSize.Scale(float32(boardSize.Y + 2))
+	windowWidth := cellSize * unit.Dp(boardSize.X+2)
+	windowHeight := cellSize * unit.Dp(boardSize.Y+2)
 	// This creates a new application window and starts the UI.
 	go func() {
 		w := app.NewWindow(
@@ -111,8 +111,8 @@ func (ui *UI) Run(w *app.Window) error {
 func (ui *UI) Layout(gtx layout.Context) layout.Dimensions {
 	return layout.Center.Layout(gtx,
 		BoardStyle{
-			CellSizePx: gtx.Px(cellSize),
-			Board:      ui.Board,
+			CellSize: cellSize,
+			Board:    ui.Board,
 		}.Layout,
 	)
 }
