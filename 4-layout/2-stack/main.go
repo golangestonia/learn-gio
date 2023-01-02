@@ -3,11 +3,10 @@
 package main
 
 import (
-	"gioui.org/font/gofont" // gofont is used for loading the default font.
-	"gioui.org/layout"      // layout is used for layouting widgets.
-	"gioui.org/op/clip"     // clip contains operations for clipping painting area.
-	"gioui.org/op/paint"    // paint contains operations for coloring.
-	"gioui.org/unit"
+	"gioui.org/font/gofont"     // gofont is used for loading the default font.
+	"gioui.org/layout"          // layout is used for layouting widgets.
+	"gioui.org/op/clip"         // clip contains operations for clipping painting area.
+	"gioui.org/op/paint"        // paint contains operations for coloring.
 	"gioui.org/widget/material" // material contains material design widgets.
 
 	"github.com/golangestonia/learn-gio/qapp" // qapp contains convenience funcs for this tutorial
@@ -42,7 +41,7 @@ func main() {
 
 				label := material.H1(Theme, "P")
 				label.Color = Theme.ContrastFg
-				label.TextSize = unit.Sp(float32(textSize) / gtx.Metric.PxPerSp)
+				label.TextSize = gtx.Metric.PxToSp(textSize)
 
 				return label.Layout(gtx)
 			}),

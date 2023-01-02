@@ -2,7 +2,7 @@ module github.com/golangestonia/learn-gio
 
 go 1.19
 
-require gioui.org v0.0.0-20221223153152-aa2a948b863a
+require gioui.org v0.0.0-20230101161950-e9bce02b24f0
 
 require (
 	gioui.org/cpu v0.0.0-20210817075930-8d6a761490d2 // indirect
